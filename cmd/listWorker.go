@@ -18,6 +18,8 @@ import (
 	"github.com/ssdSSF/swing/pkg/model"
 )
 
+var errCount int64
+
 // listWorkerCmd represents the listWorker command
 var listWorkerCmd = &cobra.Command{
 	Use:   "list-worker",
@@ -29,7 +31,10 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		logger := slog.Default()
+
+		go hearBeat(logger)
 
 		accessToken, err := refreshToken()
 		if err != nil {
@@ -47,12 +52,14 @@ to quickly create a Cobra application.`,
 			if needRefresh(accessToken) {
 				accessToken, err = refreshToken()
 				if err != nil {
+					errCount++
 					logger.Error("err refreshToken", "err", err)
 				}
 			}
 
 			op, err := openings(accessToken)
 			if err != nil {
+				errCount++
 				logger.Error("err openings", "err", err)
 			}
 
@@ -73,8 +80,9 @@ to quickly create a Cobra application.`,
 					notified[data.ID] = true
 				}
 
-				err := slack(toMessage(data))
+				err := slack(toMessage(data), cmdSecrets.SlackChannel)
 				if err != nil {
+					errCount++
 					logger.Error("err slack(data.ID)", "err", err)
 				}
 			}
@@ -93,6 +101,17 @@ to quickly create a Cobra application.`,
 			time.Sleep(time.Second * cmdSecrets.Interval)
 		}
 	},
+}
+
+func hearBeat(log *slog.Logger) {
+	for {
+		err := slack(fmt.Sprintf("hearbeat, error count %d", errCount), cmdSecrets.SlackHeartbeatChannel)
+		if err != nil {
+			errCount++
+			log.Error("err slack hearbeat", "err", err)
+		}
+		time.Sleep(10 * time.Minute)
+	}
 }
 
 func refreshToken() (string, error) {
@@ -155,12 +174,12 @@ func openings(accessToken string) (openings model.Openings, err error) {
 	return
 }
 
-func slack(message string) (err error) {
+func slack(message, channel string) (err error) {
 	client := http.Client{}
 	slackUrl := "https://slack.com/api/chat.postMessage"
 
 	slackReq := model.SlackReq{
-		Channel: cmdSecrets.SlackChannel,
+		Channel: channel,
 		Text:    message,
 	}
 	body, err := json.Marshal(slackReq)

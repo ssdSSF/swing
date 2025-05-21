@@ -72,6 +72,11 @@ to quickly create a Cobra application.`,
 			cmdSecrets.Interval = 10
 		}
 
+		if cmdSecrets.SlackHeartbeatChannel == "" {
+			fmt.Fprintf(os.Stderr, "err secrets.SlackHeartbeatChannel is empty")
+			os.Exit(1)
+		}
+
 		for i, city := range cmdSecrets.CitiesToSkip {
 			cmdSecrets.CitiesToSkip[i] = strings.ToLower(city)
 		}

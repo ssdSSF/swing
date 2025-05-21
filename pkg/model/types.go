@@ -3,11 +3,12 @@ package model
 import "time"
 
 type Secrets struct {
-	GoogleToken  string        `yaml:"googleToken"`
-	SlackToken   string        `yaml:"slackToken"`
-	SlackChannel string        `yaml:"slackChannel"`
-	Interval     time.Duration `yaml:"interval"`
-	CitiesToSkip []string      `yaml:"citiesToSkip"`
+	GoogleToken           string        `yaml:"googleToken"`
+	SlackToken            string        `yaml:"slackToken"`
+	SlackChannel          string        `yaml:"slackChannel"`
+	SlackHeartbeatChannel string        `yaml:"slackHeartbeatChannel"`
+	Interval              time.Duration `yaml:"interval"`
+	CitiesToSkip          []string      `yaml:"citiesToSkip"`
 }
 
 type RefreshToken struct {
