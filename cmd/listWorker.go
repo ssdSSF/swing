@@ -46,7 +46,8 @@ to quickly create a Cobra application.`,
 			hour, _, _ := time.Now().Local().Clock()
 			// between 00:00 to 4:59, this worker also goes to sleep
 			if hour >= 0 && hour < 5 {
-				time.Sleep(1 * time.Minute)
+				// slow down at midnight
+				time.Sleep(10 * time.Minute)
 			}
 
 			if needRefresh(accessToken) {
@@ -65,10 +66,6 @@ to quickly create a Cobra application.`,
 
 			var dataIds []string
 			for _, data := range op.Data {
-				// skip the cities that you don't want to go
-				if slices.Contains(cmdSecrets.CitiesToSkip, strings.ToLower(data.School.Address.City)) {
-					continue
-				}
 
 				dataIds = append(dataIds, data.ID)
 
@@ -169,7 +166,18 @@ func openings(accessToken string) (openings model.Openings, err error) {
 		return
 	}
 
-	err = json.NewDecoder(openingResp.Body).Decode(&openings)
+	var all model.Openings
+
+	err = json.NewDecoder(openingResp.Body).Decode(&all)
+
+	for _, op := range all.Data {
+		// if school's city belongs to cities to skip
+		if slices.Contains(cmdSecrets.CitiesToSkip, strings.ToLower(op.School.Address.City)) {
+			// then skip
+			continue
+		}
+		openings.Data = append(openings.Data, op)
+	}
 
 	return
 }
