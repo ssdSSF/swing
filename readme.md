@@ -9,7 +9,7 @@ slackChannel: C08T5T2LY21
 interval: 30
 ```
 
-To build (and run it in a Raspberry Pi):
+To build (with `env GOOS=linux GOARCH=arm`)
 ```
 make build
 ```
