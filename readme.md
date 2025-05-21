@@ -4,7 +4,7 @@
 
 ## Solution
 
-This project is to poll openings and send new notifications to the Slack channel that you designated so that your can recieve openings immediately through Slack notifications. The fastest it can poll is every 10 seconds. To avoid bot detection, the polling will also slows down between 00:00 to 04:59 in the midnight.
+This project is to poll openings and send new notifications to the Slack channel that you designated so that your can recieve openings immediately through Slack notifications. The fastest it can poll is every 10 seconds. To avoid bot detection, the polling will slow down between 00:00 to 04:59 in the midnight to every 10 minutes.
 
 Please make sure you have a [~/.swing-secrets.yaml](./swing-secrets.yaml) in your home dir:
 ```
