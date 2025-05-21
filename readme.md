@@ -1,4 +1,10 @@
-This project is to poll [Swing Education](https://swingeducation.com) openings and send new openings to the Slack channel that you designated so that your phone can recieve openings immediately through Slack notifications. The fastest it can poll is every 10 seconds. To avoid bot detection, the polling will also go to sleep between 00:00 to 04:59 in the midnight.
+## Problem Statement
+
+[Swing Education](https://swingeducation.com) is not sending the notifications through their App right away when a new opening is posted. It waits about 10 - 15 minutes if no one is signing up for the opening then it pushes the notification. It leads to a situation where a user must constantly refresh the App before an openings is taken by other user because of high demand (not enough openings).
+
+## Solution
+
+This project is to poll openings and send new notifications to the Slack channel that you designated so that your can recieve openings immediately through Slack notifications. The fastest it can poll is every 10 seconds. To avoid bot detection, the polling will also slows down between 00:00 to 04:59 in the midnight.
 
 Please make sure you have a [~/.swing-secrets.yaml](./swing-secrets.yaml) in your home dir:
 ```
