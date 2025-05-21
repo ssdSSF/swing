@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"os"
 	"slices"
 	"strings"
 	"time"
@@ -40,6 +41,9 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			logger.Error("err refreshToken", "err", err)
 		}
+
+		logger.Info("started worker")
+
 		notified := map[string]bool{}
 		for {
 
@@ -100,13 +104,17 @@ to quickly create a Cobra application.`,
 	},
 }
 
-func hearBeat(log *slog.Logger) {
+func hearBeat(logger *slog.Logger) {
 	for {
 		err := slack(fmt.Sprintf("hearbeat, error count %d", errCount), cmdSecrets.SlackHeartbeatChannel)
 		if err != nil {
 			errCount++
-			log.Error("err slack hearbeat", "err", err)
+			logger.Error("err slack hearbeat", "err", err)
+			// we should exit the whole worker if we can't even heat beat slack
+			os.Exit(1)
 		}
+		logger.Info("started heartbeat")
+
 		time.Sleep(10 * time.Minute)
 	}
 }
