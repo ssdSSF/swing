@@ -11,7 +11,12 @@ interval: 30
 
 To build (and run it in a Raspberry Pi):
 ```
-env GOOS=linux GOARCH=arm go build -o ./bin/swing-cli main.go
+make build
+```
+
+To deploy (to a Raspberry Pi, with `export PI_AT_HOST=pi@<your Raspberry Pi hostname>.local`)
+```
+make deploy
 ```
 
 Run the worker:
