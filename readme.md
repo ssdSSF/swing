@@ -18,3 +18,7 @@ Run the worker:
 ```
 ./swing-cli list-worker
 ```
+
+
+Sample Notification
+![Sample Notification](./example-slack-notification.png)
