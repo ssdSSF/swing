@@ -37,11 +37,21 @@ to quickly create a Cobra application.`,
 
 		go hearBeat(logger)
 
+		// need to get a valid google token
 		accessToken, err := refreshToken()
 		if err != nil {
 			logger.Error("err refreshToken", "err", err)
+			os.Exit(1)
 		}
 
+		// and a success openings
+		_, err = openings(accessToken)
+		if err != nil {
+			logger.Error("err openings with accessToken", "err", err)
+			os.Exit(1)
+		}
+
+		// before we can say the worker is started
 		logger.Info("started worker")
 
 		notified := map[string]bool{}
@@ -75,6 +85,7 @@ to quickly create a Cobra application.`,
 
 				_, sent := notified[data.ID]
 
+				// we only want to notify once
 				if sent {
 					continue
 				} else {
@@ -88,6 +99,7 @@ to quickly create a Cobra application.`,
 				}
 			}
 
+			// to handle an opening is re-opened
 			var toRemove []string
 			for id := range notified {
 				if !slices.Contains(dataIds, id) {
@@ -105,17 +117,24 @@ to quickly create a Cobra application.`,
 }
 
 func hearBeat(logger *slog.Logger) {
+
+	// heartbeat first
+	err := slack(fmt.Sprintf("started hearbeat, error count %d", errCount), cmdSecrets.SlackHeartbeatChannel)
+	if err != nil {
+		logger.Error("err start slack heatbeat", "err", err)
+		os.Exit(1)
+	}
+	logger.Info("started heartbeat")
+
 	for {
+		// then sleep
+		time.Sleep(10 * time.Minute)
+
 		err := slack(fmt.Sprintf("hearbeat, error count %d", errCount), cmdSecrets.SlackHeartbeatChannel)
 		if err != nil {
 			errCount++
 			logger.Error("err slack hearbeat", "err", err)
-			// we should exit the whole worker if we can't even heat beat slack
-			os.Exit(1)
 		}
-		logger.Info("started heartbeat")
-
-		time.Sleep(10 * time.Minute)
 	}
 }
 
