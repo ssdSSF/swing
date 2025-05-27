@@ -95,7 +95,7 @@ End: %s
 CreatedAt: %s
 TotalPay: $%.2f
 HourlyRate: $%.2f`, opening.School.Name, toAddress(opening.School.Address), opening.Grades,
-		opening.StartDate.In(loc), opening.EndDate.In(loc), opening.CreatedAt.In(loc),
+		opening.StartDate.In(loc).Format(time.RFC1123), opening.EndDate.In(loc).Format(time.RFC1123), opening.CreatedAt.In(loc).Format(time.RFC1123),
 		opening.Payment.TotalPayValue/100, opening.Payment.HourlyPayValue/100)
 }
 
