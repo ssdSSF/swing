@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -27,16 +28,19 @@ to quickly create a Cobra application.`,
 		accessToken, err := refreshToken()
 		if err != nil {
 			logger.Error("err refreshToken", "err", err)
+			os.Exit(1)
 		}
 
 		op, err := openings(accessToken)
 		if err != nil {
 			logger.Error("err openings", "err", err)
+			os.Exit(1)
 		}
 
 		output, err := json.MarshalIndent(op, "", "  ")
 		if err != nil {
 			logger.Error("err json.MarshalIndent", "err", err)
+			os.Exit(1)
 		}
 
 		fmt.Println(string(output))
