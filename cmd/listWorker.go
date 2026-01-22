@@ -57,13 +57,6 @@ to quickly create a Cobra application.`,
 		notified := map[string]bool{}
 		for {
 
-			hour, _, _ := time.Now().Local().Clock()
-			// between 00:00 to 4:59, this worker also goes to sleep
-			if hour >= 0 && hour < 5 {
-				// slow down at midnight
-				time.Sleep(10 * time.Minute)
-			}
-
 			if needRefresh(accessToken) {
 				accessToken, err = refreshToken()
 				if err != nil {
