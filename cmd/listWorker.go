@@ -196,10 +196,30 @@ func openings(accessToken string) (openings model.Openings, err error) {
 			// then skip
 			continue
 		}
+
+		if !schoolIncludeded(cmdSecrets.SchoolsToInclude, op.School.Name) {
+			continue
+		}
+
 		openings.Data = append(openings.Data, op)
 	}
 
 	return
+}
+
+func schoolIncludeded(schools []string, name string) bool {
+	// no schools configured, alway included
+	if len(schools) == 0 {
+		return true
+	}
+	for _, s := range schools {
+		// if the name returned contains the school configured
+		if strings.Contains(strings.ToLower(name), strings.ToLower(s)) {
+			// the school is included
+			return true
+		}
+	}
+	return false
 }
 
 func slack(message, channel string) (err error) {

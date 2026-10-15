@@ -9,6 +9,7 @@ type Secrets struct {
 	SlackHeartbeatChannel string        `yaml:"slackHeartbeatChannel"`
 	Interval              time.Duration `yaml:"interval"`
 	CitiesToSkip          []string      `yaml:"citiesToSkip"`
+	SchoolsToInclude      []string      `yaml:"schoolsToInclude"`
 }
 
 type RefreshToken struct {
